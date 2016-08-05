@@ -26,7 +26,7 @@ public class Cell {
 		switch(neighbors){
 		case 0: alive = false; break;
 		case 1: alive = false; break;
-		case 2: alive = true; break;
+		case 2: if(alive){alive = true;} break;
 		case 3: alive = true; break;
 		case 4: alive = false; break;
 		case 5: alive = false; break;
@@ -34,6 +34,12 @@ public class Cell {
 		case 7: alive = false; break;
 		case 8: alive = false; break;
 		}
+	}
+	public boolean isPoint(int xs, int ys){
+		if(this.x < xs && this.x + width > xs && this.y < ys && this.y + height > ys ){
+			return true;
+		}
+		return false;
 	}
 	
 	
