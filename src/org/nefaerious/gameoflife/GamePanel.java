@@ -9,6 +9,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Random;
+
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -38,11 +40,9 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	
 	
 	public void update(){
-		for(int i = 0; i < list.size()-1; i++){
-			
-		}
+
+		
 		repaint();	
-		System.out.println("HI");
 	}
 	
 	public void paintComponent(Graphics g){
@@ -57,9 +57,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 					g.setColor(Color.YELLOW);
 					g.fillRect(list.get(i).getX(), list.get(i).getY(), list.get(i).getWidth(), list.get(i).getHeight());
 				}
-		}
-		System.out.println(list.size());
-		
+		}		
 	}
 	
 	@Override
