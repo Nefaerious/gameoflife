@@ -9,8 +9,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import java.util.Random;
-
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -18,20 +16,31 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 
 	ArrayList<Cell> list = new ArrayList<Cell>();
 	Timer timer;
+	Cell[][] celllist;
+	int speed;
 	
 	public GamePanel(){
-		timer = new Timer(1000/60, this);
+		timer = new Timer(1000/90, this);
 		timer.start();
 		int x = 1;
 		int y = 1;
+		speed = 60;
+		celllist = new Cell[120][120];
 		for(int i = 0; i < 120; i++){
 			for(int a = 0; a < 120; a++){
-				list.add(new Cell(x, y));
-				y+= 5;
+				Cell c = new Cell(x, y);
+				list.add(c);
+				celllist[i][a] = c;
+				x+= 5;
 			}
-			y = 1;
-			x +=5;
+			x = 1;
+			y +=5;
 		}
+		
+		celllist[64][63].setAlive();
+		celllist[62][63].setAlive();
+		celllist[63][62].setAlive();
+		celllist[63][64].setAlive();
 		
 		this.addMouseListener(this);
 		this.addKeyListener(this);
@@ -40,14 +49,70 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	
 	
 	public void update(){
-
+		
+		for(int i = 0; i < 120; i++){
+			for(int a = 0; a < 120; a++){
+				int s = 0;
+				if(i == 0 && a == 0){
+					s+= celllist[i][a+1].ifAlive()?1:0;
+					s+= celllist[i+1][a].ifAlive()?1:0;
+					s+= celllist[i+1][a+1].ifAlive()?1:0;
+				}else if(i == 0 && a == 119){
+					s+= celllist[i][a-1].ifAlive()?1:0;   //4
+					s+= celllist[i+1][a-1].ifAlive()?1:0; //6
+					s+= celllist[i+1][a].ifAlive()?1:0;   //7
+				}else if(i == 119 && a == 0){
+					s+= celllist[i-1][a].ifAlive()?1:0;   //2
+					s+= celllist[i-1][a+1].ifAlive()?1:0; //3
+					s+= celllist[i][a+1].ifAlive()?1:0;   //5
+				}else if(i == 119 && a == 119){
+					s+= celllist[i-1][a-1].ifAlive()?1:0; //1
+					s+= celllist[i-1][a].ifAlive()?1:0;   //2
+					s+= celllist[i][a-1].ifAlive()?1:0;   //4
+				}else if(i == 0){
+					s+= celllist[i][a-1].ifAlive()?1:0;   //4
+					s+= celllist[i][a+1].ifAlive()?1:0;   //5
+					s+= celllist[i+1][a-1].ifAlive()?1:0; //6
+					s+= celllist[i+1][a].ifAlive()?1:0;   //7
+					s+= celllist[i+1][a+1].ifAlive()?1:0; //8
+				}else if(a == 0){
+					s+= celllist[i-1][a].ifAlive()?1:0;
+					s+= celllist[i-1][a+1].ifAlive()?1:0;
+					s+= celllist[i][a+1].ifAlive()?1:0;
+					s+= celllist[i+1][a].ifAlive()?1:0;
+					s+= celllist[i+1][a+1].ifAlive()?1:0;
+				}else if(i == 119){
+					s+= celllist[i-1][a-1].ifAlive()?1:0; //1
+					s+= celllist[i-1][a].ifAlive()?1:0;   //2
+					s+= celllist[i-1][a+1].ifAlive()?1:0; //3
+					s+= celllist[i][a-1].ifAlive()?1:0;   //4
+					s+= celllist[i][a+1].ifAlive()?1:0;   //5
+				}else if (a == 119){
+					s+= celllist[i-1][a-1].ifAlive()?1:0; //1
+					s+= celllist[i-1][a].ifAlive()?1:0;   //2
+					s+= celllist[i][a-1].ifAlive()?1:0;   //4
+					s+= celllist[i+1][a-1].ifAlive()?1:0; //6
+					s+= celllist[i+1][a].ifAlive()?1:0;   //7
+				}else{
+					s+= celllist[i-1][a-1].ifAlive()?1:0; //1
+					s+= celllist[i-1][a].ifAlive()?1:0;   //2
+					s+= celllist[i-1][a+1].ifAlive()?1:0; //3
+					s+= celllist[i][a-1].ifAlive()?1:0;   //4
+					s+= celllist[i][a+1].ifAlive()?1:0;   //5
+					s+= celllist[i+1][a-1].ifAlive()?1:0; //6
+					s+= celllist[i+1][a].ifAlive()?1:0;   //7
+					s+= celllist[i+1][a+1].ifAlive()?1:0; //8
+				}
+				celllist[i][a].checkAlive(s); 
+			}
+		}
 		
 		repaint();	
 	}
 	
 	public void paintComponent(Graphics g){
 		
-		g.setColor(Color.BLACK);
+		g.setColor(Color.GRAY);
 		g.fillRect(0, 0, 601, 601);
 		
 		g.setColor(Color.DARK_GRAY);
@@ -57,6 +122,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 					g.setColor(Color.YELLOW);
 					g.fillRect(list.get(i).getX(), list.get(i).getY(), list.get(i).getWidth(), list.get(i).getHeight());
 				}
+				g.setColor(Color.DARK_GRAY);
 		}		
 	}
 	
@@ -66,8 +132,13 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+		int x =  e.getX();
+		int y = e.getY()-3;
+		for(int i = 0; i < list.size()-1; i++){
+			if(list.get(i).isPoint(x, y)){
+				list.get(i).setAlive();
+			}
+		}	
 	}
 	@Override
 	public void mousePressed(MouseEvent e) {
@@ -93,6 +164,17 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 
 	@Override
 	public void keyTyped(KeyEvent e) {
+		if(e.getKeyCode() == KeyEvent.VK_RIGHT){
+			speed+=10;
+		}
+		if(e.getKeyCode() == KeyEvent.VK_LEFT){
+			if(speed -10 <= 0){
+				throw new IllegalArgumentException("Won't work!");
+			}else
+			speed-=10;
+		}
+		System.out.println(speed);
+		timer.setDelay(1000/speed);
 	}
 
 

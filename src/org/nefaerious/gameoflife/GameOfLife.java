@@ -10,11 +10,11 @@ import javax.swing.JFrame;
 public class GameOfLife extends JFrame{
 
 	final private int WIDTH = 601;
-	final private int HEIGHT = 700;
+	final private int HEIGHT = 601;
 	
 	public GameOfLife(){
 		
-		JFrame frame = new JFrame("Volume");
+		JFrame frame = new JFrame("Conway's game of life by Sammy Shin");
 		frame.setSize(WIDTH, HEIGHT);
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
