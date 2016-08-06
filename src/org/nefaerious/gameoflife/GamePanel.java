@@ -20,8 +20,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	int speed;
 	
 	public GamePanel(){
-		timer = new Timer(1000/90, this);
-		timer.start();
+		timer = new Timer(1000/90, this);//keep it at 1000/90
+		//timer.start();
 		int x = 1;
 		int y = 1;
 		speed = 60;
@@ -36,6 +36,10 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			x = 1;
 			y +=5;
 		}
+		
+		celllist[100][63].setAlive(); //these dont work because they die before the others turn on
+		celllist[101][63].setAlive();
+		celllist[102][63].setAlive();
 		
 		celllist[64][63].setAlive();
 		celllist[62][63].setAlive();
@@ -103,7 +107,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 					s+= celllist[i+1][a].ifAlive()?1:0;   //7
 					s+= celllist[i+1][a+1].ifAlive()?1:0; //8
 				}
-				celllist[i][a].checkAlive(s); 
+					celllist[i][a].checkAlive(s); 
+				
 			}
 		}
 		
@@ -141,6 +146,15 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		}	
 	}
 	@Override
+	public void keyPressed(KeyEvent e) {
+		if(e.getKeyCode() == KeyEvent.VK_LEFT){
+			timer.start();
+		}
+		else if(e.getKeyCode() == KeyEvent.VK_RIGHT){
+			timer.stop();
+		}
+	}
+	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
@@ -160,29 +174,10 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		// TODO Auto-generated method stub
 		
 	}
-
-
 	@Override
 	public void keyTyped(KeyEvent e) {
-		if(e.getKeyCode() == KeyEvent.VK_RIGHT){
-			speed+=10;
-		}
-		if(e.getKeyCode() == KeyEvent.VK_LEFT){
-			if(speed -10 <= 0){
-				throw new IllegalArgumentException("Won't work!");
-			}else
-			speed-=10;
-		}
-		System.out.println(speed);
-		timer.setDelay(1000/speed);
+	
 	}
-
-
-	@Override
-	public void keyPressed(KeyEvent e) {
-	}
-
-
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
