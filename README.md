@@ -1,1 +1,1 @@
-# a copy of Conway's game of life
+# a game of Conway's game of life
