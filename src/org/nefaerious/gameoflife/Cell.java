@@ -58,8 +58,8 @@ public class Cell {
 	public boolean ifAlive(){
 		return alive;
 	}
-	public void setAlive(){
-		alive = true;
+	public void setAlive(boolean value){
+		alive = value;
 	}
 	
 	
