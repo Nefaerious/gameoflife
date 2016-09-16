@@ -9,12 +9,14 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class GamePanel extends JPanel implements ActionListener, MouseListener, KeyListener{
 
-	ArrayList<Cell> list = new ArrayList<Cell>();
+	List<Cell> list = new ArrayList<Cell>();
 	Timer timer;
 	Cell[][] celllist;
 	int speed;
@@ -37,14 +39,15 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			y +=5;
 		}
 		
-		celllist[100][63].setAlive(); //these dont work because they die before the others turn on
-		celllist[101][63].setAlive();
-		celllist[102][63].setAlive();
-		
-		celllist[64][63].setAlive();
-		celllist[62][63].setAlive();
-		celllist[63][62].setAlive();
-		celllist[63][64].setAlive();
+//		celllist[100][63].setAlive(true);
+//		celllist[101][63].setAlive(true);
+//		celllist[102][63].setAlive(true);
+//		
+//		celllist[64][63].setAlive(true);
+//		celllist[62][63].setAlive(true);
+//		celllist[63][62].setAlive(true);
+//		celllist[63][64].setAlive(true);
+
 		
 		this.addMouseListener(this);
 		this.addKeyListener(this);
@@ -53,6 +56,22 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	
 	
 	public void update(){
+		Cell[][] tempest = new Cell[120][120];
+		
+		// Thai fixes things here.
+		List<Cell> tempraylist = new ArrayList<>();
+		
+		// Just replicated the old cells because the state of the cell
+		// is a function of its previous state. (That's something I figured out!)
+		for(int i = 0; i < 120; i++){
+			for(int a = 0; a < 120; a++){
+				Cell old = celllist[i][a];
+				Cell c = new Cell(old.x, old.y);
+				c.setAlive(old.ifAlive());
+				tempraylist.add(c);
+				tempest[i][a] = c;
+			}
+		}
 		
 		for(int i = 0; i < 120; i++){
 			for(int a = 0; a < 120; a++){
@@ -107,11 +126,18 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 					s+= celllist[i+1][a].ifAlive()?1:0;   //7
 					s+= celllist[i+1][a+1].ifAlive()?1:0; //8
 				}
-					celllist[i][a].checkAlive(s); 
+					tempest[i][a].checkAlive(s); 
 				
 			}
 		}
 		
+		// Overwrite the old arrays and lists.
+		celllist = tempest;
+		list = tempraylist;
+		
+	}
+	
+	public void render() {		
 		repaint();	
 	}
 	
@@ -124,7 +150,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		for(int i = 0; i < list.size()-1; i++){
 			g.drawRect(list.get(i).getX(), list.get(i).getY(), list.get(i).getWidth(), list.get(i).getHeight());
 				if(list.get(i).ifAlive()){
-					g.setColor(Color.YELLOW);
+					g.setColor(Color.CYAN);
 					g.fillRect(list.get(i).getX(), list.get(i).getY(), list.get(i).getWidth(), list.get(i).getHeight());
 				}
 				g.setColor(Color.DARK_GRAY);
@@ -134,6 +160,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		update();
+		render();
 	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -141,19 +168,71 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		int y = e.getY()-3;
 		for(int i = 0; i < list.size()-1; i++){
 			if(list.get(i).isPoint(x, y)){
-				list.get(i).setAlive();
+				list.get(i).setAlive(true);
 			}
-		}	
+		}
+		render();
 	}
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if(e.getKeyCode() == KeyEvent.VK_LEFT){
-			timer.start();
-		}
-		else if(e.getKeyCode() == KeyEvent.VK_RIGHT){
 			timer.stop();
 		}
+		else if(e.getKeyCode() == KeyEvent.VK_RIGHT){
+			timer.start();
+		}
+		
+		if(e.getKeyCode() == KeyEvent.VK_UP){
+					
+			int sC = 30;
+			int sR = 30;
+			
+			celllist[sC][sR].setAlive(true);
+			celllist[sC][sR+1].setAlive(true);
+			celllist[sC+1][sR].setAlive(true);
+			celllist[sC+1][sR+1].setAlive(true);
+			celllist[sC][sR+10].setAlive(true);
+			celllist[sC+1][sR+10].setAlive(true);
+			celllist[sC+2][sR+10].setAlive(true);
+			celllist[sC-1][sR+11].setAlive(true);
+			celllist[sC-2][sR+12].setAlive(true);
+			celllist[sC-2][sR+13].setAlive(true);
+			celllist[sC+3][sR+11].setAlive(true);
+			celllist[sC+4][sR+12].setAlive(true);
+			celllist[sC+4][sR+13].setAlive(true);
+			celllist[sC-1][sR+15].setAlive(true);
+			celllist[sC][sR+16].setAlive(true);
+			celllist[sC+3][sR+15].setAlive(true);
+			celllist[sC+2][sR+16].setAlive(true);
+			celllist[sC+1][sR+16].setAlive(true);
+			celllist[sC+1][sR+17].setAlive(true);
+			celllist[sC+1][sR+14].setAlive(true);	
+			celllist[sC][sR+20].setAlive(true);
+			celllist[sC-1][sR+20].setAlive(true);
+			celllist[sC-2][sR+20].setAlive(true);
+			celllist[sC][sR+21].setAlive(true);
+			celllist[sC-1][sR+21].setAlive(true);
+			celllist[sC-2][sR+21].setAlive(true);	
+			celllist[sC+1][sR+22].setAlive(true);
+			celllist[sC-3][sR+22].setAlive(true);
+			celllist[sC+1][sR+24].setAlive(true);
+			celllist[sC+2][sR+24].setAlive(true);
+			celllist[sC-3][sR+24].setAlive(true);
+			celllist[sC-4][sR+24].setAlive(true);		
+			celllist[sC-2][sR+34].setAlive(true);
+			celllist[sC-2][sR+35].setAlive(true);
+			celllist[sC-1][sR+34].setAlive(true);
+			celllist[sC-1][sR+35].setAlive(true);
+
+		}
+		
+		// The space key can be used as a toggle button for time. ~ Thai
+		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+			if (timer.isRunning()) timer.stop();
+			else timer.start();
+		}
 	}
+	
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
